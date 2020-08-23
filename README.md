@@ -19,7 +19,7 @@ yarn add react-native-webview
 
 ## ✍️ Usage
 
-Apply the default export [ExpressWyre](./src/providers/ExpressWyre.js) at the graphical root of your application. Then call the [`usePlaid`](./src/hooks/usePlaid/js) hook to [**request a public token**](https://docs.sendwyre.com/docs/payment-method-overview):
+Apply the default export [`ExpressWyre`](./src/providers/ExpressWyre.js) at the graphical root of your application. Then call the [`usePlaid`](./src/hooks/usePlaid/js) hook to [**request a public token**](https://docs.sendwyre.com/docs/payment-method-overview):
 
 ```javascript
 import React from "react";
