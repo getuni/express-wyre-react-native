@@ -54,15 +54,6 @@ export default function App() {
     </ExpressWyre>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
 ```
 
 The `baseUrl` prop is **required**. This defines the location of your [`express-wyre`](https://github.com/cawfree/express-wyre) [**middleware**](https://expressjs.com/en/guide/using-middleware.html). For further details, check out the [**Example App**](./example/App.js).
