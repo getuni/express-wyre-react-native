@@ -1,0 +1,48 @@
+{
+  "dependencies": {
+    "react-native-modalbox": "^2.0.0",
+    "react-native-web-webview": "1.0.1",
+    "type-check": "^0.4.0"
+  },
+  "peerDependencies": {
+    "prop-types": "^15.7.2",
+    "react": "^16.13.1",
+    "react-native": "^0.63.2",
+    "react-native-webview": "^10.7.0"
+  },
+  "keywords": [
+    "react-native",
+    "webview",
+    "web",
+    "wyre",
+    "sendwyre",
+    "crypto",
+    "payment",
+    "plaid"
+  ],
+  "scripts": {
+    "build": "babel src --out-dir dist",
+    "prettify": "yarn prettier --write \"**/*.js\"",
+    "test": "jest"
+  },
+  "name": "express-wyre-react-native",
+  "version": "0.0.1-alpha.0",
+  "description": "💸 The companion React Native library for express-wyre. https://github.com/cawfree/express-wyre",
+  "main": "dist",
+  "repository": "https://github.com/cawfree/express-wyre-react-native",
+  "author": "Alex Thomas (@cawfree) <hello@cawfree.com>",
+  "license": "MIT",
+  "private": false,
+  "devDependencies": {
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.11.4",
+    "@babel/node": "^7.10.5",
+    "@babel/polyfill": "^7.10.4",
+    "@babel/preset-env": "^7.11.0",
+    "@babel/preset-react": "^7.10.4",
+    "husky": "^4.2.5",
+    "jest": "^26.4.2",
+    "leasot": "^11.1.0",
+    "prettier": "^2.0.5"
+  }
+}
