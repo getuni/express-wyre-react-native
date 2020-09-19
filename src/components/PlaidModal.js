@@ -1,16 +1,12 @@
 import React, { useRef, useCallback, useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Animated, Platform, StyleSheet } from "react-native";
+import { Animated, Platform, StyleSheet, StatusBar } from "react-native";
 import { typeCheck } from "type-check";
 import { WebView } from "react-native-webview-modal";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 
 const styles = StyleSheet.create({
   modal: { backgroundColor: "transparent" },
-  nativeContainerStyle: {
-    marginVertical: getStatusBarHeight(),
-    marginHorizontal: getStatusBarHeight(),
-  },
 });
 
 // XXX: This is a blank template we use to force refresh.
@@ -64,18 +60,6 @@ function PlaidModal({ visible, onPublicToken, onExit, baseUrl, ...extraProps }) 
     [onPublicToken, onExit, shouldReload],
   );
 
-  const nativeProps = {
-    containerStyle: styles.nativeContainerStyle,
-  };
-
-  const conditionalProps = Platform.select(
-    {
-      android: nativeProps,
-      ios: nativeProps,
-      default: {},
-    },
-  );
-
   /* when open, the iframe steals input focus on web */
   if (visible || Platform.OS !== "web") {
     return (
@@ -85,8 +69,10 @@ function PlaidModal({ visible, onPublicToken, onExit, baseUrl, ...extraProps }) 
           { opacity: animOpacity }
         ]}
       >
+        {(Platform.OS !== "web") && (
+          <StatusBar hidden={visible} />
+        )}
         <WebView
-          {...conditionalProps}
           visible={visible}
           style={[StyleSheet.absoluteFill, styles.modal]}
           source={source}

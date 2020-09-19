@@ -24,8 +24,18 @@ function PlaidButton() {
 export default function App() {
   const [value, onChangeText] = useState("");
   return (
-    <ExpressWyre baseUrl="http://localhost:3000/wyre"> 
-      <View style={[StyleSheet.absoluteFill]}>
+    <ExpressWyre
+      baseUrl="http://localhost:3000/wyre"
+      renderLoading={() => (
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "blue",
+          }}
+        />
+      )}
+    > 
+      <View style={[StyleSheet.absoluteFill, { backgroundColor: "green" }]}>
         <SafeAreaView />
         <PlaidButton />
         <TextInput
