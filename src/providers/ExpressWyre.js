@@ -8,10 +8,9 @@ import { ExpressWyreContext } from "../contexts";
 import { PlaidModal } from "../components";
 
 const styles = StyleSheet.create({
-  plaid: { backgroundColor: "white" },
 });
 
-function ExpressWyre({ children, baseUrl, ...extraProps }) {
+function ExpressWyre({ children, baseUrl, renderLoading, ...extraProps }) {
 
   if (!typeCheck("String", baseUrl) || baseUrl.length <= 0) {
     throw new Error(`Expected String baseUrl, encountered ${baseUrl}.`);
@@ -84,15 +83,13 @@ function ExpressWyre({ children, baseUrl, ...extraProps }) {
     >
       <WebViewModalProvider>
         {children}
-        <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
-          <Animated.View
-            pointerEvents={isInProgress ? "auto" : "none"}
-            style={[
-              StyleSheet.absoluteFill,
-              styles.plaid,
-              { opacity: animOpacity },
-            ]}
-          />
+        <View
+          style={StyleSheet.absoluteFill}
+          pointerEvents={isInProgress ? "auto" : "none"}
+        >
+          <Animated.View style={[StyleSheet.absoluteFill, { opacity: animOpacity }]}>
+            {renderLoading({})}
+          </Animated.View>
           <PlaidModal
             baseUrl={baseUrl}
             onPublicToken={onPublicToken}
@@ -107,8 +104,18 @@ function ExpressWyre({ children, baseUrl, ...extraProps }) {
 
 ExpressWyre.propTypes = {
   baseUrl: PropTypes.string.isRequired,
+  renderLoading: PropTypes.func,
 };
 
-ExpressWyre.defaultProps = {};
+ExpressWyre.defaultProps = {
+  renderLoading: ({}) => (
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: "white",
+      }}
+    />
+  ),
+};
 
 export default ExpressWyre;

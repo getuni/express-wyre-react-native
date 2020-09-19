@@ -1,15 +1,15 @@
 import React, { useRef, useCallback, useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Platform, StyleSheet } from "react-native";
+import { Animated, Platform, StyleSheet } from "react-native";
 import { typeCheck } from "type-check";
-import { WebViewModal } from "react-native-webview-modal";
+import { WebView } from "react-native-webview-modal";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 
 const styles = StyleSheet.create({
   modal: { backgroundColor: "transparent" },
   nativeContainerStyle: {
-    marginTop: getStatusBarHeight(),
-    marginHorizontal: 15,
+    marginVertical: getStatusBarHeight(),
+    marginHorizontal: getStatusBarHeight(),
   },
 });
 
@@ -18,8 +18,23 @@ const html = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\" /><
 
 function PlaidModal({ visible, onPublicToken, onExit, baseUrl, ...extraProps }) {
 
+  const [animOpacity] = useState(() => new Animated.Value(0));
   const createSource = useCallback(() => ({ uri: `${baseUrl}/verify` }), [baseUrl]);
   const [source, setSource] = useState(createSource);
+
+  useEffect(
+    () => {
+      Animated.timing(
+        animOpacity,
+        {
+          toValue: visible ? 1 : 0,
+          useNativeDriver: Platform.OS !== "web",
+          duration: 1000,
+        },
+      ).start();
+    },
+    [animOpacity, visible],
+  );
 
   const shouldReload = useCallback(
     async () => {
@@ -61,15 +76,26 @@ function PlaidModal({ visible, onPublicToken, onExit, baseUrl, ...extraProps }) 
     },
   );
 
-  return (
-    <WebViewModal
-      {...conditionalProps}
-      visible={visible}
-      style={[StyleSheet.absoluteFill, styles.modal]}
-      source={source}
-      onMessage={onMessage}
-    />
-  );
+  /* when open, the iframe steals input focus on web */
+  if (visible || Platform.OS !== "web") {
+    return (
+      <Animated.View
+        style={[
+          StyleSheet.absoluteFill,
+          { opacity: animOpacity }
+        ]}
+      >
+        <WebView
+          {...conditionalProps}
+          visible={visible}
+          style={[StyleSheet.absoluteFill, styles.modal]}
+          source={source}
+          onMessage={onMessage}
+        />
+      </Animated.View>
+    );
+  }
+  return null;
 }
 
 PlaidModal.propTypes = {

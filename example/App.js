@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { Button, StyleSheet, SafeAreaView, View } from 'react-native';
+import React, { useState } from 'react';
+import { Button, StyleSheet, SafeAreaView, View, TextInput } from 'react-native';
 
 import ExpressWyre, { usePlaid } from "express-wyre-react-native";
 
@@ -22,11 +22,17 @@ function PlaidButton() {
 };
 
 export default function App() {
+  const [value, onChangeText] = useState("");
   return (
-    <ExpressWyre baseUrl="http://localhost:3000/wyre">
+    <ExpressWyre baseUrl="http://localhost:3000/wyre"> 
       <View style={[StyleSheet.absoluteFill]}>
         <SafeAreaView />
         <PlaidButton />
+        <TextInput
+          placeholder="Some text here. (This is for testing.)"
+          onChangeText={onChangeText}
+          value={value}
+        />
       </View>
     </ExpressWyre>
   );
