@@ -26,7 +26,7 @@
     "test": "jest"
   },
   "name": "express-wyre-react-native",
-  "version": "0.0.1-alpha.2",
+  "version": "0.0.1-alpha.3",
   "description": "💸 The companion React Native library for express-wyre. https://github.com/cawfree/express-wyre",
   "main": "dist",
   "repository": "https://github.com/cawfree/express-wyre-react-native",
