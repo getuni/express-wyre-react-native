@@ -1,48 +1,74 @@
-import React, { useCallback } from "react";
+import React, { useRef, useCallback, useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import ModalBox from "react-native-modalbox";
 import { Platform, StyleSheet } from "react-native";
 import { typeCheck } from "type-check";
-
-import { WebView } from ".";
+import { WebViewModal } from "react-native-webview-modal";
+import { getStatusBarHeight } from "react-native-status-bar-height";
 
 const styles = StyleSheet.create({
   modal: { backgroundColor: "transparent" },
+  nativeContainerStyle: {
+    marginTop: getStatusBarHeight(),
+    marginHorizontal: 15,
+  },
 });
 
+// XXX: This is a blank template we use to force refresh.
+const html = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\" /><meta http-equiv=\"x-ua-compatible\" content=\"ie=edge, chrome=1\" /><title></title></head><body></body></html>";
+
 function PlaidModal({ visible, onPublicToken, onExit, baseUrl, ...extraProps }) {
+
+  const createSource = useCallback(() => ({ uri: `${baseUrl}/verify` }), [baseUrl]);
+  const [source, setSource] = useState(createSource);
+
+  const shouldReload = useCallback(
+    async () => {
+      await setSource({ html });
+      await setSource(createSource);
+    },
+    [setSource, createSource],
+  );
+
   const onMessage = useCallback(
-    ({ nativeEvent: { data }}) => {
+    async ({ nativeEvent: { data }}) => {
       try {
         const e = JSON.parse(data);
         if (typeCheck("{type:String,...}", e)) {
           const {type, ...extras} = e;
           if (type === "plaid/result") {
             const { publicToken } = extras;
-            return onPublicToken(publicToken);
+            await onPublicToken(publicToken);
+            return shouldReload();
           } else if (type === "plaid/exit") {
-            return onExit();
+            await onExit();
+            return shouldReload();
           }
         }
       } catch (e) {}
     },
-    [onPublicToken, onExit],
+    [onPublicToken, onExit, shouldReload],
   );
+
+  const nativeProps = {
+    containerStyle: styles.nativeContainerStyle,
+  };
+
+  const conditionalProps = Platform.select(
+    {
+      android: nativeProps,
+      ios: nativeProps,
+      default: {},
+    },
+  );
+
   return (
-    <ModalBox
-      style={StyleSheet.flatten([StyleSheet.absoluteFill, styles.modal])}
-      coverScreen={Platform.OS !== "web"}
-      isOpen={visible}
-    >
-      <WebView
-        style={StyleSheet.absoluteFill}
-        source={{
-          uri: `${baseUrl}/verify`,
-        }}
-        scalesPageToFit={false}
-        onMessage={onMessage}
-      />
-    </ModalBox>
+    <WebViewModal
+      {...conditionalProps}
+      visible={visible}
+      style={[StyleSheet.absoluteFill, styles.modal]}
+      source={source}
+      onMessage={onMessage}
+    />
   );
 }
 
